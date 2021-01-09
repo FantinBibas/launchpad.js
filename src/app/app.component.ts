@@ -10,6 +10,7 @@ export class AppComponent {
   output?: string;
   x = 0;
   y = 0;
+  color = 0;
 
   constructor(
     public midiService: MidiService
@@ -22,10 +23,13 @@ export class AppComponent {
 
   write(): void {
     if (this.output) {
+      this.midiService.writeColorToPosition(this.output, this.x, this.y, this.color);
+    }
+  }
+
+  reset(): void {
+    if (this.output) {
       this.midiService.writeToOutput(this.output, [176, 0, 0]);
-      for (let i = 0; i <= 127; i++) {
-        this.midiService.writeToOutput(this.output, [144, i, i]);
-      }
     }
   }
 }

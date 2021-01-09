@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import {Component, EventEmitter, Input, OnInit, Output} from '@angular/core';
 
 @Component({
   selector: 'app-palette',
@@ -6,10 +6,14 @@ import { Component, OnInit } from '@angular/core';
   styleUrls: ['./palette.component.scss']
 })
 export class PaletteComponent implements OnInit {
+  @Input()
+  colors: {r: number, g: number, b: number, a: number, code: number}[] = [];
 
-  constructor() { }
+  @Output() chooseColor = new EventEmitter<number>();
+
+  constructor() {
+  }
 
   ngOnInit(): void {
   }
-
 }

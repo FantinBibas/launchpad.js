@@ -76,12 +76,28 @@ export class MidiService {
     return this.errorString;
   }
 
-  writeToOutput(id: string, data: number[]): void {
+  writeToOutput(outputId: string, data: number[]): void {
     this.outputs
-      .filter(device => device.id === id)
+      .filter(device => device.id === outputId)
       .forEach(device => device.send(data));
   }
 
-  writeColorToPosition(x: number, y: number, color: number): void {
+  resetColors(outputId: string): void {
+    this.writeToOutput(outputId, [176, 0, 0]);
+  }
+
+  writeColorToPosition(outputId: string, x: number, y: number, color: number): boolean {
+    if (y < 0 || y > 8 || x < 0 || x > 8) {
+      return false;
+    }
+    if (y === 0) {
+      if (x < 0 || x > 7) {
+        return false;
+      }
+      this.writeToOutput(outputId, [176, 104 + x, color]);
+      return true;
+    }
+    this.writeToOutput(outputId, [144, (y - 1) * 16 + x, color]);
+    return true;
   }
 }

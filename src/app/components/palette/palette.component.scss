@@ -1,0 +1,11 @@
+.palette {
+  display: flex;
+  flex-wrap: wrap;
+  width: 4.8em;
+
+  .color {
+    margin: .1em;
+    width: 1em;
+    height: 1em;
+  }
+}

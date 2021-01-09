@@ -23,7 +23,20 @@
       [device]="input"
     ></app-device>
   </div>
+  <br/>
+  X: <input type="number" [(ngModel)]="x"><br/>
+  Y: <input type="number" [(ngModel)]="y"><br/>
+  <br/>
+  <app-palette
+    [colors]="midiService.colors"
+    (chooseColor)="color = $event"
+  ></app-palette>
+  <br/>
   <button (click)="write()">
-    Aled
+    Write color
+  </button>
+  <br/>
+  <button (click)="reset()">
+    Reset
   </button>
 </div>
