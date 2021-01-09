@@ -6,11 +6,9 @@ import { Injectable } from '@angular/core';
 export class MidiService {
   errorString?: string;
   // @ts-ignore
-  access?: WebMidi.MIDIAccess;
+  inputs: WebMidi.MIDIInput[] = [];
   // @ts-ignore
-  inputDevices: WebMidi.MIDIInput[] = [];
-  // @ts-ignore
-  outputDevices: WebMidi.MIDIOutputs[] = [];
+  outputs: WebMidi.MIDIOutput[] = [];
 
   constructor() {
     // @ts-ignore
@@ -21,13 +19,33 @@ export class MidiService {
       navigator.requestMIDIAccess()
         // @ts-ignore
         .then((access: WebMidi.MIDIAccess) => {
-          this.access = access;
+          if (access) {
+            this.inputs = [];
+            for (const device of access.inputs.values()) {
+              this.inputs.push(device);
+            }
+            this.outputs = [];
+            for (const device of access.outputs.values()) {
+              this.outputs.push(device);
+            }
+          }
           // @ts-ignore
-          this.access.onstatechange = (event: WebMidi.MIDIConnectionEvent) => {
-            console.log(event);
-            this.updateDevices();
+          access.onstatechange = (event: WebMidi.MIDIConnectionEvent) => {
+            const device = event.port;
+            if (device.type === 'output') {
+              if (device.state === 'connected') {
+                this.outputs.push(device);
+              } else {
+                this.outputs = this.outputs.filter(output => output.id !== device.id);
+              }
+            } else {
+              if (device.state === 'connected') {
+                this.inputs.push(device);
+              } else {
+                this.inputs = this.inputs.filter(input => input.id !== device.id);
+              }
+            }
           };
-          this.updateDevices();
         })
         .catch((error: Error) => {
           console.error(error);
@@ -40,34 +58,9 @@ export class MidiService {
     return this.errorString;
   }
 
-  updateDevices(): void {
-    if (this.access) {
-      this.inputDevices = [];
-      for (const device of this.access.inputs.values()) {
-        this.inputDevices.push(device);
-      }
-      this.outputDevices = [];
-      for (const device of this.access.outputs.values()) {
-        this.outputDevices.push(device);
-      }
-    }
-  }
-
-  // @ts-ignore
-  get inputs(): WebMidi.MIDIInput[] {
-    return this.inputDevices;
-  }
-
-  // @ts-ignore
-  get outputs(): WebMidi.MIDIOutput[] {
-    return this.outputDevices;
-  }
-
-  writeToOutput(id: string): void {
-    if (this.outputDevices) {
-      this.outputDevices
-        .filter(device => device.id === id)
-        .forEach(device => device.send([144, 20, 50]));
-    }
+  writeToOutput(id: string, data: number[]): void {
+    this.outputs
+      .filter(device => device.id === id)
+      .forEach(device => device.send(data));
   }
 }

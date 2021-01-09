@@ -14,13 +14,16 @@ export class AppComponent {
   ) {
   }
 
-  chooseOutput(selectElement: EventTarget): void {
-    this.output = (selectElement as HTMLSelectElement).value;
+  chooseOutput(output: string): void {
+    this.output = output;
   }
 
   write(): void {
     if (this.output) {
-      this.midiService.writeToOutput(this.output);
+      this.midiService.writeToOutput(this.output, [176, 0, 0]);
+      for (let i = 0; i <= 127; i++) {
+        this.midiService.writeToOutput(this.output, [144, i, 1]);
+      }
     }
   }
 }
