@@ -2,8 +2,16 @@
 <span class="error">{{ midiService.error }}</span>
 <div>
   <select *ngIf="midiService.inputs">
-    <option *ngFor="let input of midiService.inputs.values()" [value]="input.id">
+    <option *ngFor="let input of midiService.inputs" [value]="input.id">
       {{ input.name }}
     </option>
   </select>
+  <select *ngIf="midiService.outputs" (change)="chooseOutput($event.target)">
+    <option *ngFor="let input of midiService.outputs" [value]="input.id">
+      {{ input.name }}
+    </option>
+  </select>
+  <button (click)="write()">
+    Aled
+  </button>
 </div>

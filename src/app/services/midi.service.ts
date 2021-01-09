@@ -7,6 +7,10 @@ export class MidiService {
   errorString?: string;
   // @ts-ignore
   access?: WebMidi.MIDIAccess;
+  // @ts-ignore
+  inputDevices: WebMidi.MIDIInput[] = [];
+  // @ts-ignore
+  outputDevices: WebMidi.MIDIOutputs[] = [];
 
   constructor() {
     // @ts-ignore
@@ -17,9 +21,13 @@ export class MidiService {
       navigator.requestMIDIAccess()
         // @ts-ignore
         .then((access: WebMidi.MIDIAccess) => {
-          console.log('Got access');
-          console.log(access);
           this.access = access;
+          // @ts-ignore
+          this.access.onstatechange = (event: WebMidi.MIDIConnectionEvent) => {
+            console.log(event);
+            this.updateDevices();
+          };
+          this.updateDevices();
         })
         .catch((error: Error) => {
           console.error(error);
@@ -32,19 +40,34 @@ export class MidiService {
     return this.errorString;
   }
 
-  // @ts-ignore
-  get inputs(): WebMidi.MIDIInputMap | null {
-    if (!this.access) {
-      return null;
+  updateDevices(): void {
+    if (this.access) {
+      this.inputDevices = [];
+      for (const device of this.access.inputs.values()) {
+        this.inputDevices.push(device);
+      }
+      this.outputDevices = [];
+      for (const device of this.access.outputs.values()) {
+        this.outputDevices.push(device);
+      }
     }
-    return this.access.inputs;
   }
 
   // @ts-ignore
-  get output(): WebMidi.MIDIOutputMap | null {
-    if (!this.access) {
-      return null;
+  get inputs(): WebMidi.MIDIInput[] {
+    return this.inputDevices;
+  }
+
+  // @ts-ignore
+  get outputs(): WebMidi.MIDIOutput[] {
+    return this.outputDevices;
+  }
+
+  writeToOutput(id: string): void {
+    if (this.outputDevices) {
+      this.outputDevices
+        .filter(device => device.id === id)
+        .forEach(device => device.send([144, 20, 50]));
     }
-    return this.access.outputs;
   }
 }

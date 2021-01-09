@@ -7,8 +7,20 @@ import {MidiService} from './services/midi.service';
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  output?: string;
+
   constructor(
     public midiService: MidiService
   ) {
+  }
+
+  chooseOutput(selectElement: EventTarget): void {
+    this.output = (selectElement as HTMLSelectElement).value;
+  }
+
+  write(): void {
+    if (this.output) {
+      this.midiService.writeToOutput(this.output);
+    }
   }
 }
