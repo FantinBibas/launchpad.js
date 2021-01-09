@@ -1,9 +1,11 @@
-import { Injectable } from '@angular/core';
+import {Injectable} from '@angular/core';
 
 @Injectable({
   providedIn: 'root'
 })
 export class ConfigService {
-
-  constructor() { }
+  // TODO Store in local storage
+  // TODO Import / export
+  constructor() {
+  }
 }

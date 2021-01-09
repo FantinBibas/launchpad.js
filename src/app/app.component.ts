@@ -8,6 +8,8 @@ import {MidiService} from './services/midi.service';
 })
 export class AppComponent {
   output?: string;
+  x = 0;
+  y = 0;
 
   constructor(
     public midiService: MidiService
@@ -22,7 +24,7 @@ export class AppComponent {
     if (this.output) {
       this.midiService.writeToOutput(this.output, [176, 0, 0]);
       for (let i = 0; i <= 127; i++) {
-        this.midiService.writeToOutput(this.output, [144, i, 1]);
+        this.midiService.writeToOutput(this.output, [144, i, i]);
       }
     }
   }
