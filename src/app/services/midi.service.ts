@@ -40,7 +40,7 @@ export class MidiService {
           if (access) {
             this.inputs = [];
             for (const device of access.inputs.values()) {
-              this.inputs.push(device);
+              this.addInput(device);
             }
             this.outputs = [];
             for (const device of access.outputs.values()) {
@@ -58,7 +58,7 @@ export class MidiService {
               }
             } else {
               if (device.state === 'connected') {
-                this.inputs.push(device);
+                this.addInput(device);
               } else {
                 this.inputs = this.inputs.filter(input => input.id !== device.id);
               }
@@ -74,6 +74,36 @@ export class MidiService {
 
   get error(): string | undefined {
     return this.errorString;
+  }
+
+  // @ts-ignore
+  addInput(input: WebMidi.MIDIInput): void {
+    // @ts-ignore
+    input.onmidimessage = (event: WebMidi.MIDIMessageEvent) => this.handleMidiMessage(input.id, event);
+    this.inputs.push(input);
+  }
+
+  // @ts-ignore
+  handleMidiMessage(inputId: string, event: WebMidi.MIDIMessageEvent): void {
+    if (event.data.length !== 3 || ![144, 176].includes(event.data[0])) {
+      return;
+    }
+    if (event.data[0] === 176) {
+      const x = event.data[1] - 104;
+      if (x < 0 || x > 7) {
+        return;
+      }
+      return this.handleButtonStateChange(inputId, x, 0, event.data[2] !== 0);
+    }
+    if (event.data[0] === 144) {
+      const x = event.data[1] % 16;
+      const y = Math.floor(event.data[1] / 16);
+      return this.handleButtonStateChange(inputId, x, y + 1, event.data[2] !== 0);
+    }
+  }
+
+  handleButtonStateChange(inputId: string, x: number, y: number, pressed: boolean): void {
+    console.log(x, y, pressed);
   }
 
   writeToOutput(outputId: string, data: number[]): void {
