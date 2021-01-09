@@ -3,11 +3,18 @@
 <div>
   <div>
     Outputs:
-    <app-device
+    <div
       *ngFor="let input of midiService.outputs"
-      [device]="input"
-      (click)="chooseOutput(input.id)"
-    ></app-device>
+    >
+      <app-device
+        [device]="input"
+      ></app-device>
+      <button
+        (click)="chooseOutput(input.id)"
+      >
+        Choose
+      </button>
+    </div>
   </div>
   <div>
     Inputs:
