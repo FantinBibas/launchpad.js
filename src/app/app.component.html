@@ -24,6 +24,7 @@
     ></app-device>
   </div>
   <br/>
+  Text: <input type="text" [(ngModel)]="text" (change)="write()"><br/>
   X: <input type="number" [(ngModel)]="x"><br/>
   Y: <input type="number" [(ngModel)]="y"><br/>
   <br/>
@@ -34,6 +35,10 @@
   <br/>
   <button (click)="write()">
     Write color
+  </button>
+  <br/>
+  <button (click)="lightAll()">
+    Light all
   </button>
   <br/>
   <button (click)="reset()">

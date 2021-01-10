@@ -27,6 +27,7 @@ export class MidiService {
   inputs: WebMidi.MIDIInput[] = [];
   // @ts-ignore
   outputs: WebMidi.MIDIOutput[] = [];
+  tmp: string = '';
 
   constructor() {
     // @ts-ignore
@@ -43,8 +44,13 @@ export class MidiService {
               this.addInput(device);
             }
             this.outputs = [];
+            let i = 0;
             for (const device of access.outputs.values()) {
+              if (i === 1) {
+                this.tmp = device.id;
+              }
               this.outputs.push(device);
+              i++;
             }
           }
           // @ts-ignore
@@ -103,6 +109,7 @@ export class MidiService {
   }
 
   handleButtonStateChange(inputId: string, x: number, y: number, pressed: boolean): void {
+    this.writeColorToPosition(this.tmp, x, y, pressed ? 3 : 0);
     console.log(x, y, pressed);
   }
 
@@ -114,6 +121,18 @@ export class MidiService {
 
   resetColors(outputId: string): void {
     this.writeToOutput(outputId, [176, 0, 0]);
+  }
+
+  allColors(outputId: string): void {
+    this.writeToOutput(outputId, [176, 0, 127]);
+  }
+
+  writeColorToGridPosition(outputId: string, x: number, y: number, color: number): boolean {
+    if (y < 0 || y > 7 || x < 0 || x > 7) {
+      return false;
+    }
+    this.writeToOutput(outputId, [144, y * 16 + x, color]);
+    return true;
   }
 
   writeColorToPosition(outputId: string, x: number, y: number, color: number): boolean {
@@ -130,4 +149,15 @@ export class MidiService {
     this.writeToOutput(outputId, [144, (y - 1) * 16 + x, color]);
     return true;
   }
+
+  drawToGridPosition(outputId: string, x: number, y: number, colors: number[][]): void {
+    for (let yOffset = 0; yOffset < colors.length; yOffset++) {
+      for (let xOffset = 0; xOffset < colors[yOffset].length; xOffset++) {
+        this.writeColorToGridPosition(outputId, x + xOffset, y + yOffset, colors[yOffset][xOffset]);
+      }
+    }
+  }
+
+  // TODO Color all leds (code 146 LedCtrlRawRapid in launchpad.py)
+  // TODO Store colors & update only when different
 }
