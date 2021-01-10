@@ -6,9 +6,7 @@
     <div
       *ngFor="let input of midiService.outputs"
     >
-      <app-device
-        [device]="input"
-      ></app-device>
+      <span>{{ input.name }}</span>
       <button
         (click)="chooseOutput(input.id)"
       >

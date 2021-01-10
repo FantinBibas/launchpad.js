@@ -1,3 +1,10 @@
-<div>
-  {{ device.name }}
+<div class="device">
+  <!-- TODO Handle different devices -->
+  <div class="button-row" *ngFor="let buttonRow of currentScene">
+    <app-launchpad-button
+      *ngFor="let button of buttonRow"
+      type="square"
+      [color]="getColor(button)"
+    ></app-launchpad-button>
+  </div>
 </div>

@@ -1,6 +1,5 @@
 import {Injectable} from '@angular/core';
 import {MidiService} from './midi.service';
-import {TimeInterval} from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -491,10 +490,62 @@ export class ControllerService {
       [0, 0, 0],
     ],
   };
+  colorCodes: {[key: number]: {r: number, g: number, b: number, a: number}} = {
+    0: {r: 0, g: 0, b: 0, a: 0},
+    1: {r: 255, g: 0, b: 0, a: .3},
+    2: {r: 255, g: 0, b: 0, a: .6},
+    3: {r: 255, g: 0, b: 0, a: 1},
+    16: {r: 0, g: 255, b: 0, a: .3},
+    17: {r: 255, g: 128, b: 0, a: .3},
+    18: {r: 255, g: 128, b: 0, a: .6},
+    19: {r: 255, g: 85, b: 0, a: 1},
+    32: {r: 0, g: 255, b: 0, a: .6},
+    33: {r: 128, g: 255, b: 0, a: .6},
+    34: {r: 255, g: 255, b: 0, a: .6},
+    35: {r: 255, g: 128, b: 0, a: 1},
+    48: {r: 0, g: 255, b: 0, a: 1},
+    49: {r: 85, g: 255, b: 0, a: 1},
+    50: {r: 128, g: 255, b: 0, a: 1},
+    51: {r: 255, g: 255, b: 0, a: 11}
+  };
+  colors = [
+    {r: 0, g: 0, b: 0, a: 0, code: 0},
+    {r: 255, g: 0, b: 0, a: .3, code: 1},
+    {r: 255, g: 0, b: 0, a: .6, code: 2},
+    {r: 255, g: 0, b: 0, a: 1, code: 3},
+    {r: 0, g: 255, b: 0, a: .3, code: 16},
+    {r: 255, g: 128, b: 0, a: .3, code: 17},
+    {r: 255, g: 128, b: 0, a: .6, code: 18},
+    {r: 255, g: 85, b: 0, a: 1, code: 19},
+    {r: 0, g: 255, b: 0, a: .6, code: 32},
+    {r: 128, g: 255, b: 0, a: .6, code: 33},
+    {r: 255, g: 255, b: 0, a: .6, code: 34},
+    {r: 255, g: 128, b: 0, a: 1, code: 35},
+    {r: 0, g: 255, b: 0, a: 1, code: 48},
+    {r: 85, g: 255, b: 0, a: 1, code: 49},
+    {r: 128, g: 255, b: 0, a: 1, code: 50},
+    {r: 255, g: 255, b: 0, a: 1, code: 51}
+  ];
+  scenes: {[key: string]: number[][]} = {};
 
   constructor(
     private midiService: MidiService
   ) {
+  }
+
+  initDevice(deviceId: string): void {
+    this.scenes[deviceId] = [
+      [0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0],
+      [0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ];
+    this.midiService.resetColors(deviceId);
   }
 
   drawCharToGridPosition(outputId: string, x: number, y: number, char: string, fontColor: number, backgroundColor: number = 0): void {

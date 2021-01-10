@@ -27,7 +27,7 @@ export class MidiService {
   inputs: WebMidi.MIDIInput[] = [];
   // @ts-ignore
   outputs: WebMidi.MIDIOutput[] = [];
-  tmp: string = '';
+  tmp = '';
 
   constructor() {
     // @ts-ignore
@@ -128,7 +128,7 @@ export class MidiService {
   }
 
   writeColorToGridPosition(outputId: string, x: number, y: number, color: number): boolean {
-    if (y < 0 || y > 7 || x < 0 || x > 7) {
+    if (y < 0 || y > 7 || x < 0 || x > 7 || color < 0 || color > 127) {
       return false;
     }
     this.writeToOutput(outputId, [144, y * 16 + x, color]);
@@ -136,7 +136,7 @@ export class MidiService {
   }
 
   writeColorToPosition(outputId: string, x: number, y: number, color: number): boolean {
-    if (y < 0 || y > 8 || x < 0 || x > 8) {
+    if (y < 0 || y > 8 || x < 0 || x > 8 || color < 0 || color > 127) {
       return false;
     }
     if (y === 0) {

@@ -1,0 +1,7 @@
+<div class="button {{type}}">
+  <div
+    *ngIf="color"
+    class="light"
+    [style.background]="'radial-gradient(rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + color.a + ') 0%, transparent 120%)'"
+  ></div>
+</div>

@@ -1,4 +1,5 @@
 import {Component, Input, OnInit} from '@angular/core';
+import {ControllerService} from '../../services/controller.service';
 
 @Component({
   selector: 'app-device',
@@ -10,9 +11,18 @@ export class DeviceComponent implements OnInit {
   // @ts-ignore
   device: WebMidi.MIDIPort;
 
-  constructor() {
+  @Input()
+  currentScene: number[][] = [];
+
+  constructor(
+    private controllerService: ControllerService
+  ) {
   }
 
   ngOnInit(): void {
+  }
+
+  getColor(code: number): {r: number, g: number, b: number, a: number} {
+    return this.controllerService.colorCodes[code];
   }
 }

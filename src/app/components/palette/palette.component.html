@@ -1,8 +1,8 @@
 <div class="palette">
-  <div
+  <app-launchpad-button
     *ngFor="let color of colors"
-    [style.background-color]="'rgba(' + color.r + ',' + color.g + ',' + color.b + ',' + color.a + ')'"
-    class="color"
+    [color]="color"
+    type="square"
     (click)="chooseColor.emit(color.code)"
-  ></div>
+  ></app-launchpad-button>
 </div>
